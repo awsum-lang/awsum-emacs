@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  workflow_call:
+
+jobs:
+  byte-compile:
+    name: Byte-compile (${{ matrix.os }}, Emacs ${{ matrix.emacs_version }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-latest]
+        emacs_version: ['29.4', '30.1']
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install Emacs
+        uses: purcell/setup-emacs@master
+        with:
+          version: ${{ matrix.emacs_version }}
+
+      # Byte-compile catches unbound symbols, free vars, deprecated calls,
+      # and unmatched arity — the same checks `just byte-compile' runs.
+      # `--eval (setq byte-compile-error-on-warn t)' upgrades every warning
+      # to a hard failure so the CI signal is binary.
+      - name: Byte-compile
+        run: |
+          emacs --batch \
+            --eval "(setq byte-compile-error-on-warn t)" \
+            -L . \
+            -f batch-byte-compile awsum.el
+
+      # Smoke-test loading: prove the file actually `require's cleanly with
+      # all its top-level forms. Byte-compile already loads the immediate
+      # `require'd deps (eglot, treesit, cl-generic) at compile time, but
+      # top-level `add-to-list' calls only run on load — this catches if
+      # any of them blow up against the installed Emacs.
+      - name: Smoke-test load
+        run: |
+          emacs --batch \
+            -L . \
+            --eval "(require 'awsum)" \
+            --eval "(message \"OK: awsum-emacs %s loads cleanly\" awsum-version)"
