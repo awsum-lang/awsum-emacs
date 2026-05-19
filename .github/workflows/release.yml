@@ -1,0 +1,72 @@
+name: Release
+
+# Tag is the source of truth: pushing `v*` is what creates an immutable release
+# tied to a specific commit. There is intentionally no `workflow_dispatch` here —
+# if a release run fails, delete the tag, fix, retag.
+on:
+  push:
+    tags:
+      - "v*"
+
+# Don't cancel a release mid-flight if a second tag arrives somehow.
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # Package ships its version in two synchronised places in `awsum.el`:
+  # the `;; Version:' library header (read by package.el / MELPA) and the
+  # `(defconst awsum-version ...)' constant (read at runtime and sent to
+  # the language server as `expectedAwsumVersion'). A tag / version mismatch
+  # would make the LSP version check warn for every user on first open.
+  # Fail fast before publishing the release.
+  verify-version:
+    name: Verify tag matches awsum.el version
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check version
+        run: |
+          set -euo pipefail
+          tag_version="${GITHUB_REF_NAME#v}"
+          defconst_version=$(grep -m1 '^(defconst awsum-version' awsum.el | sed 's/.*"\(.*\)".*/\1/')
+          header_version=$(grep -m1 '^;; Version:' awsum.el | sed 's/^;; Version:[ \t]*//')
+          if [[ "$tag_version" != "$defconst_version" ]]; then
+            echo "Tag $GITHUB_REF_NAME implies version $tag_version, but (defconst awsum-version) has $defconst_version" >&2
+            exit 1
+          fi
+          if [[ "$tag_version" != "$header_version" ]]; then
+            echo "Tag $GITHUB_REF_NAME implies version $tag_version, but ;; Version: header has $header_version" >&2
+            exit 1
+          fi
+
+  ci:
+    needs: verify-version
+    uses: ./.github/workflows/ci.yml
+
+  release:
+    name: Publish GitHub Release
+    needs: ci
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      # Required for `gh release create`.
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      # Emacs packages installed via `package-vc-install' / `use-package :vc'
+      # pull directly from git at the tagged ref — no compiled artefact to
+      # attach. GitHub auto-attaches source `.tar.gz' and `.zip' to every
+      # Release based on the tagged commit, which is all consumers need.
+      # So no asset upload, no provenance attestation.
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release create "$GITHUB_REF_NAME" \
+            --title "$GITHUB_REF_NAME" \
+            --notes "See [CHANGELOG.md](./CHANGELOG.md)"

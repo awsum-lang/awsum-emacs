@@ -1,0 +1,19 @@
+# Byte-compiled Emacs Lisp
+*.elc
+
+# Native-compiled Emacs Lisp (Emacs 28+)
+*.eln
+eln-cache/
+
+# Package.el bookkeeping artefacts (regenerated on every `package-vc-install` /
+# byte-compile cycle — checked in is fine for nobody).
+awsum-autoloads.el
+awsum-pkg.el
+
+# Emacs backup / autosave artefacts
+*~
+\#*\#
+.\#*
+
+# macOS Finder
+.DS_Store
