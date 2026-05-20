@@ -86,6 +86,21 @@ front-end."
              '(awsum-ts-mode . (eglot-awsum "awsum" "lsp" "--stdio")))
 
 
+;;;###autoload
+(defun awsum-restart-lsp-server ()
+  "Restart the Awsum LSP server for the current buffer.
+
+Delegates to `eglot-reconnect', which stops the `awsum lsp' process and
+starts a fresh one with the same `eglot-initialization-options'.  Useful
+after a local `stack install' of a new `awsum' build, or to clear any
+in-memory state on the server."
+  (interactive)
+  (unless (eglot-current-server)
+    (user-error "No Awsum LSP server attached to this buffer"))
+  (eglot-reconnect (eglot-current-server))
+  (message "awsum: LSP server restart triggered"))
+
+
 ;;; Tree-sitter grammar
 
 (add-to-list 'treesit-language-source-alist
