@@ -120,6 +120,14 @@ M-x xref-find-apropos     ; workspace symbol search
 
 Bind to your own keymaps as you prefer.
 
+### Restart the LSP server
+
+```
+M-x awsum-restart-lsp-server
+```
+
+Stops the `awsum lsp` process and starts a new one with the same settings (a thin wrapper over `eglot-reconnect`). Useful after a local `stack install` of a new `awsum` build, or to clear any in-memory state on the server. No default keymap; bind via `define-key awsum-ts-mode-map` if you use it often.
+
 ## Configuration
 
 The package works with zero configuration. To customize:
