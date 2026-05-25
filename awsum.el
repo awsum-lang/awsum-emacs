@@ -1,6 +1,6 @@
 ;;; awsum.el --- Awsum language support  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2025 Vladimir Logachev
+;; Copyright (C) 2025-2026 Vladimir Logachev
 
 ;; Author: Vladimir Logachev
 ;; Maintainer: Vladimir Logachev
@@ -11,7 +11,7 @@
 
 ;; This file is not part of GNU Emacs.
 
-;; SPDX-License-Identifier: MIT
+;; SPDX-License-Identifier: Apache-2.0
 
 ;;; Commentary:
 
