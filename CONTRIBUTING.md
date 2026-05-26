@@ -17,9 +17,27 @@ The package targets stock GNU Emacs 29.1+ and uses only built-in APIs — no `ls
 
 After `just install-local`, any subsequent `emacs file.aww` auto-loads the package from the symlinked checkout — edits to `awsum.el` take effect immediately on the next file open. There's no need to re-install after every change.
 
+## Developer Certificate of Origin
+
+By contributing to `awsum-emacs` you certify the [Developer Certificate of Origin](https://developercertificate.org/) (DCO) for your contribution — a short statement that you wrote the patch yourself, or otherwise have the right to submit it under the project's [Apache-2.0 license](LICENSE). The full text is at the link above.
+
+After cloning, run once:
+
+```bash
+just setup-dev
+```
+
+This installs the `prepare-commit-msg` hook from [scripts/git-hooks/](scripts/git-hooks/) (via per-clone `core.hooksPath`), which adds a `Signed-off-by` trailer to every commit you make in this clone:
+
+```
+Signed-off-by: Your Name <you@example.com>
+```
+
+The trailer uses the name and email from your `[user]` section in `~/.gitconfig` (the same one used for signed commits below). No manual flags, no global gitconfig changes. The setup is per-clone — repeat in each clone of the repo.
+
 ## Signed commits
 
-The `main` branch requires signed commits — every commit you push to a PR needs a verified signature, otherwise the merge button stays grey.
+Separately from the DCO trailer above, the `main` branch requires signed commits — every commit you push to a PR needs a verified signature (GPG or SSH), otherwise the merge button stays grey.
 
 Minimal `~/.gitconfig` for SSH signing:
 
