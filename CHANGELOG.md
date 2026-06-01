@@ -10,6 +10,8 @@ Until `awsum 1.0.0`, the project does not follow SemVer — every release increm
 
 ## [Unreleased]
 
+## [0.0.5] - 2026-05-31
+
 ### Added
 
 - `M-x awsum-restart-lsp-server` command — thin wrapper over `eglot-reconnect`. Stops the `awsum lsp` process and starts a new one with the same `eglot-initialization-options`. Useful after a local `stack install` of a new `awsum` build, or to clear any in-memory state on the server. No default keymap.
