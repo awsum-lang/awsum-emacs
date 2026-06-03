@@ -4,7 +4,7 @@
 
 ;; Author: Vladimir Logachev
 ;; Maintainer: Vladimir Logachev
-;; Version: 0.0.5
+;; Version: 0.0.6
 ;; Package-Requires: ((emacs "29.1"))
 ;; URL: https://github.com/awsum-lang/awsum-emacs
 ;; Keywords: languages
@@ -39,7 +39,7 @@
   :group 'languages
   :prefix "awsum-")
 
-(defconst awsum-version "0.0.5"
+(defconst awsum-version "0.0.6"
   "Version of `awsum-emacs', shipped to the language server as
 `expectedAwsumVersion' so the server can warn on mismatch.  Must
 match the version of the `awsum' compiler binary on `PATH'.")
@@ -105,7 +105,7 @@ in-memory state on the server."
 
 (add-to-list 'treesit-language-source-alist
              '(awsum "https://github.com/awsum-lang/tree-sitter-awsum"
-                     "v0.0.5"
+                     "v0.0.6"
                      "src"))
 
 (defun awsum--ensure-grammar ()
