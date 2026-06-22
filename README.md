@@ -26,14 +26,14 @@ All of the above are powered by the `awsum` compiler's bundled language server �
 
 ## Install
 
-The snippets below pin to **`v0.0.6`**. Replace with the version of `awsum` you have installed — package and compiler must match (see [Versioning](#versioning)).
+The snippets below pin to **`v0.0.7`**. Replace with the version of `awsum` you have installed — package and compiler must match (see [Versioning](#versioning)).
 
 ### Option 1: `package-vc-install` (built-in, no extra dependencies)
 
 Emacs 29.1+ ships [`package-vc-install`](https://www.gnu.org/software/emacs/manual/html_node/emacs/Fetching-Package-Sources.html) as part of `package.el`. Run once:
 
 ```elisp
-M-x package-vc-install RET https://github.com/awsum-lang/awsum-emacs RET v0.0.6 RET
+M-x package-vc-install RET https://github.com/awsum-lang/awsum-emacs RET v0.0.7 RET
 ```
 
 Or as elisp in `init.el`:
@@ -42,10 +42,10 @@ Or as elisp in `init.el`:
 (unless (package-installed-p 'awsum)
   (package-vc-install
    '(awsum :url "https://github.com/awsum-lang/awsum-emacs"
-           :rev "v0.0.6")))
+           :rev "v0.0.7")))
 ```
 
-To update later: `M-x package-vc-checkout RET awsum RET v0.0.6.1 RET` (or whatever new tag matches your `awsum`).
+To update later: `M-x package-vc-checkout RET awsum RET vX.Y.Z RET` (the new tag matching your `awsum`).
 
 To uninstall: `M-x package-delete RET awsum RET`.
 
@@ -54,7 +54,7 @@ To uninstall: `M-x package-delete RET awsum RET`.
 ```elisp
 (use-package awsum
   :vc (:url "https://github.com/awsum-lang/awsum-emacs"
-       :rev "v0.0.6"))
+       :rev "v0.0.7"))
 ```
 
 `use-package` is bundled with Emacs 29.1+; the `:vc` keyword was added in Emacs 30.
@@ -64,7 +64,7 @@ To uninstall: `M-x package-delete RET awsum RET`.
 For local development against a git checkout:
 
 ```sh
-git clone --branch v0.0.6 https://github.com/awsum-lang/awsum-emacs ~/src/awsum-emacs
+git clone --branch v0.0.7 https://github.com/awsum-lang/awsum-emacs ~/src/awsum-emacs
 cd ~/src/awsum-emacs && just install-local
 ```
 
