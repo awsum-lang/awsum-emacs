@@ -10,6 +10,12 @@ Until `awsum 1.0.0`, the project does not follow SemVer — every release increm
 
 ## [Unreleased]
 
+## [0.0.7] - 2026-06-22
+
+### Changed
+
+- Lockstep release with `awsum` 0.0.7. Tree-sitter grammar pin (`treesit-language-source-alist`) bumped to `tree-sitter-awsum` v0.0.7.
+
 ## [0.0.6] - 2026-06-03
 
 ### Changed
