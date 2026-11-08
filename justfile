@@ -72,7 +72,11 @@ uninstall-local:
 
 # Byte-compile awsum.el — surfaces unused vars, free refs, deprecated calls.
 byte-compile:
-  emacs --batch -L . -f batch-byte-compile awsum.el
+  emacs --batch --eval "(setq byte-compile-error-on-warn t)" -L . -f batch-byte-compile awsum.el
+
+# Regression test: a grammar built from a tag other than the pinned one is reinstalled
+test:
+  emacs --batch --eval "(setq load-prefer-newer t)" -L . -l test/awsum-test.el -f ert-run-tests-batch-and-exit
 
 # Remove byte-compiled artefacts.
 clean:

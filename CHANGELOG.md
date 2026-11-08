@@ -10,6 +10,21 @@ Until `awsum 1.0.0`, the project does not follow SemVer — every release increm
 
 ## [Unreleased]
 
+## [0.0.8] - 2026-11-08
+
+### Fixed
+
+- **A package update now reinstalls the Tree-sitter grammar.** The package installed the grammar only when none was available, so after an update the grammar compiled from the previous tag stayed in `~/.emacs.d/tree-sitter/`, and grammar fixes in a new release never reached existing users. The tag the grammar was built from is now recorded next to it (`awsum.rev`), and the first `.aww` open after an update that moves the pin reinstalls the grammar before loading it. Pinned by `just test` (ERT), which CI runs.
+- **Nested block comments highlight correctly.** The grammar pin moves to `tree-sitter-awsum` 0.0.8, which parses `{- outer {- inner -} more -}` as one comment; before, a nested comment broke highlighting of the declaration after it.
+
+### Changed
+
+- Lockstep release with `awsum` 0.0.8.
+- `just byte-compile` treats warnings as errors, like CI.
+- The README lists hover (type and doc comment of the name under the cursor). `awsum lsp` has served it since 0.0.5; only the documentation was missing it.
+- **Requires Emacs 31.1 or newer** (previously 29.1), the newest Emacs release, per Awsum's platform version policy. CI tests 31.1 (previously 29.4 and 30.1).
+- CI: every GitHub Action pinned to the commit SHA of a release at least 7 days old.
+
 ## [0.0.7] - 2026-06-22
 
 ### Changed

@@ -13,7 +13,7 @@ just byte-compile      # emacs --batch -L . -f batch-byte-compile awsum.el — s
 just clean             # Remove byte-compiled artefacts (*.elc)
 ```
 
-The package targets stock GNU Emacs 29.1+ and uses only built-in APIs — no `lsp-mode`, `straight.el`, or third-party tree-sitter manager. Local development needs Emacs 29.1+ on `PATH`, the `awsum` CLI on `PATH` (for end-to-end testing through eglot), and a C compiler (so `treesit-install-language-grammar` can build the parser the first time you open a `.aww` file).
+The package targets stock GNU Emacs 31.1+ and uses only built-in APIs — no `lsp-mode`, `straight.el`, or third-party tree-sitter manager. Local development needs Emacs 29.1+ on `PATH`, the `awsum` CLI on `PATH` (for end-to-end testing through eglot), and a C compiler (so `treesit-install-language-grammar` can build the parser the first time you open a `.aww` file).
 
 After `just install-local`, any subsequent `emacs file.aww` auto-loads the package from the symlinked checkout — edits to `awsum.el` take effect immediately on the next file open. There's no need to re-install after every change.
 
