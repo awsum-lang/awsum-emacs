@@ -4,8 +4,8 @@
 
 ;; Author: Vladimir Logachev
 ;; Maintainer: Vladimir Logachev
-;; Version: 0.0.7
-;; Package-Requires: ((emacs "29.1"))
+;; Version: 0.0.8
+;; Package-Requires: ((emacs "31.1"))
 ;; URL: https://github.com/awsum-lang/awsum-emacs
 ;; Keywords: languages
 
@@ -39,7 +39,7 @@
   :group 'languages
   :prefix "awsum-")
 
-(defconst awsum-version "0.0.7"
+(defconst awsum-version "0.0.8"
   "Version of `awsum-emacs', shipped to the language server as
 `expectedAwsumVersion' so the server can warn on mismatch.  Must
 match the version of the `awsum' compiler binary on `PATH'.")
@@ -105,24 +105,46 @@ in-memory state on the server."
 
 (add-to-list 'treesit-language-source-alist
              '(awsum "https://github.com/awsum-lang/tree-sitter-awsum"
-                     "v0.0.7"
+                     "v0.0.8"
                      "src"))
 
+(defun awsum--grammar-rev-file ()
+  "File recording the `tree-sitter-awsum' tag of the installed grammar.
+It sits next to the grammar that `treesit-install-language-grammar'
+installs by default."
+  (expand-file-name "awsum.rev" (locate-user-emacs-file "tree-sitter")))
+
 (defun awsum--ensure-grammar ()
-  "Install the Awsum tree-sitter grammar if it isn't already available.
+  "Install the Awsum tree-sitter grammar when it is missing or out of date.
+
+Out of date means built from a tag other than the one pinned in
+`treesit-language-source-alist': a package update moves the pin but
+leaves the compiled grammar behind.  The check runs before the
+grammar is loaded, since Emacs cannot replace a grammar it has
+already loaded.
 
 Called from `awsum-ts-mode' on activation.  If the grammar can't be
-installed (no C compiler, no network), surface a `message' and let
-the mode start without tree-sitter — Eglot still works."
-  (unless (treesit-ready-p 'awsum t)
-    (condition-case err
-        (treesit-install-language-grammar 'awsum)
-      (error
-       (message
-        "awsum-emacs: tree-sitter grammar install failed (%s).  \
-Highlighting unavailable; LSP features still work.  Re-run with \
+installed (no C compiler, no network), surface a `message'; the mode
+then uses a previously installed grammar if there is one, and starts
+without tree-sitter otherwise — Eglot still works."
+  (let* ((pin (nth 2 (assq 'awsum treesit-language-source-alist)))
+         (rev-file (awsum--grammar-rev-file))
+         (installed (and (file-readable-p rev-file)
+                         (with-temp-buffer
+                           (insert-file-contents rev-file)
+                           (string-trim (buffer-string))))))
+    (unless (and (equal installed pin) (treesit-ready-p 'awsum t))
+      (condition-case err
+          (progn
+            (treesit-install-language-grammar 'awsum)
+            (with-temp-file rev-file (insert pin "\n")))
+        (error
+         (message
+          "awsum-emacs: tree-sitter grammar install failed (%s).  \
+Highlighting uses the previously installed grammar, if any; LSP \
+features still work.  Re-run with \
 `M-x treesit-install-language-grammar RET awsum RET' to retry."
-        (error-message-string err))))))
+          (error-message-string err)))))))
 
 
 ;;; Font-lock rules (port of tree-sitter-awsum/queries/highlights.scm)

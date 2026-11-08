@@ -8,6 +8,7 @@ Emacs support for the [Awsum](https://awsum-lang.org) programming language (`.aw
 - Code formatting (`awsum format`)
 - Inline diagnostics (errors + warnings)
 - Quick fixes (code actions)
+- Hover: type and doc comment of the name at point (Eldoc)
 - Document symbols (Imenu)
 - Workspace symbol search
 
@@ -15,25 +16,25 @@ All of the above are powered by the `awsum` compiler's bundled language server �
 
 ## Requirements
 
-- **Emacs 29.1+** (uses the built-in `eglot` LSP client and the built-in `treesit` Tree-sitter runtime).
+- **Emacs 31.1+** (uses the built-in `eglot` LSP client and the built-in `treesit` Tree-sitter runtime).
 - The `awsum` compiler on your `PATH` — see [awsum-lang/awsum](https://github.com/awsum-lang/awsum).
-- A C compiler + internet, to install the Tree-sitter parser on first use:
+- A C compiler + internet, to install the Tree-sitter parser on first use and after an update that changes its version:
   - **macOS**: `xcode-select --install` (Xcode Command Line Tools).
   - **Linux**: `build-essential` (Debian/Ubuntu) / `base-devel` (Arch) / equivalent.
   - **Windows**: run from a "Developer Command Prompt for VS" after installing [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) so MSVC `cl.exe` + `link.exe` are on `PATH`. MinGW `gcc` also works if available.
 
-  Emacs uses [`treesit-install-language-grammar`](https://www.gnu.org/software/emacs/manual/html_node/elisp/Language-Grammar.html) to clone [`tree-sitter-awsum`](https://github.com/awsum-lang/tree-sitter-awsum) and compile it on the first `.aww` open (~1 second, cached afterward in `~/.emacs.d/tree-sitter/`).
+  Emacs uses [`treesit-install-language-grammar`](https://www.gnu.org/software/emacs/manual/html_node/elisp/Language-Grammar.html) to clone [`tree-sitter-awsum`](https://github.com/awsum-lang/tree-sitter-awsum) and compile it on the first `.aww` open (~1 second, cached afterward in `~/.emacs.d/tree-sitter/`), and again on the first open after a package update moves the grammar to a new tag.
 
 ## Install
 
-The snippets below pin to **`v0.0.7`**. Replace with the version of `awsum` you have installed — package and compiler must match (see [Versioning](#versioning)).
+The snippets below pin to **`v0.0.8`**. Replace with the version of `awsum` you have installed — package and compiler must match (see [Versioning](#versioning)).
 
 ### Option 1: `package-vc-install` (built-in, no extra dependencies)
 
-Emacs 29.1+ ships [`package-vc-install`](https://www.gnu.org/software/emacs/manual/html_node/emacs/Fetching-Package-Sources.html) as part of `package.el`. Run once:
+Emacs ships [`package-vc-install`](https://www.gnu.org/software/emacs/manual/html_node/emacs/Fetching-Package-Sources.html) as part of `package.el`. Run once:
 
 ```elisp
-M-x package-vc-install RET https://github.com/awsum-lang/awsum-emacs RET v0.0.7 RET
+M-x package-vc-install RET https://github.com/awsum-lang/awsum-emacs RET v0.0.8 RET
 ```
 
 Or as elisp in `init.el`:
@@ -42,29 +43,27 @@ Or as elisp in `init.el`:
 (unless (package-installed-p 'awsum)
   (package-vc-install
    '(awsum :url "https://github.com/awsum-lang/awsum-emacs"
-           :rev "v0.0.7")))
+           :rev "v0.0.8")))
 ```
 
 To update later: `M-x package-vc-checkout RET awsum RET vX.Y.Z RET` (the new tag matching your `awsum`).
 
 To uninstall: `M-x package-delete RET awsum RET`.
 
-### Option 2: `use-package :vc` (built-in `use-package` in Emacs 30+)
+### Option 2: `use-package :vc` (built-in)
 
 ```elisp
 (use-package awsum
   :vc (:url "https://github.com/awsum-lang/awsum-emacs"
-       :rev "v0.0.7"))
+       :rev "v0.0.8"))
 ```
-
-`use-package` is bundled with Emacs 29.1+; the `:vc` keyword was added in Emacs 30.
 
 ### Option 3: Manual via `just install-local`
 
 For local development against a git checkout:
 
 ```sh
-git clone --branch v0.0.7 https://github.com/awsum-lang/awsum-emacs ~/src/awsum-emacs
+git clone --branch v0.0.8 https://github.com/awsum-lang/awsum-emacs ~/src/awsum-emacs
 cd ~/src/awsum-emacs && just install-local
 ```
 
@@ -110,9 +109,12 @@ Eglot routes diagnostics to Emacs's built-in [`flymake`](https://www.gnu.org/sof
 | List all diagnostics in the buffer           | —                     | `M-x flymake-show-buffer-diagnostics`     |
 | List all diagnostics in the project          | —                     | `M-x flymake-show-project-diagnostics`    |
 
-### Code actions, symbols
+### Hover, code actions, symbols
+
+Eglot shows the type and doc comment of the name at point in the echo area through Eldoc.
 
 ```
+M-x eldoc-doc-buffer      ; full hover text for the name at point
 M-x eglot-code-actions    ; quick fixes at point
 M-x imenu                 ; document symbols
 M-x xref-find-apropos     ; workspace symbol search
@@ -146,6 +148,8 @@ The package works with zero configuration. To customize:
 
 `awsum-emacs A.B.C` is built and tested against `awsum A.B.C`. Mismatched versions are not supported — at startup the language server compares the package's expected version against its own and shows a notification on mismatch.
 
+Supported editor versions follow Awsum's [platform version policy](https://github.com/awsum-lang/awsum/blob/main/docs/platform-version-policy.md#editors): the minimum is the newest stable release that has been out for at least 7 days.
+
 ## Related
 
 - Compiler (hosts `awsum lsp`): [awsum-lang/awsum](https://github.com/awsum-lang/awsum)
@@ -158,7 +162,7 @@ The package works with zero configuration. To customize:
 
 ## AI use
 
-This Emacs package is developed with substantial usage of generative AI. Every generated change is reviewed, edited, and accepted by a human before it lands in the repository, and no output is shipped unedited.
+This Emacs package is developed with substantial usage of generative AI.
 
 ## License
 
