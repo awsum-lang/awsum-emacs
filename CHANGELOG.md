@@ -22,7 +22,7 @@ Until `awsum 1.0.0`, the project does not follow SemVer — every release increm
 - Lockstep release with `awsum` 0.0.8.
 - `just byte-compile` treats warnings as errors, like CI.
 - The README lists hover (type and doc comment of the name under the cursor). `awsum lsp` has served it since 0.0.5; only the documentation was missing it.
-- **Requires Emacs 31.1 or newer** (previously 29.1), the newest Emacs release, per Awsum's platform version policy. CI tests 31.1 (previously 29.4 and 30.1).
+- **Requires Emacs 31.1 or newer** (previously 29.1), the newest Emacs release, per the Awsum platform version policy. CI tests 31.1 (previously 29.4 and 30.1).
 - CI: every GitHub Action pinned to the commit SHA of a release at least 7 days old.
 
 ## [0.0.7] - 2026-06-22

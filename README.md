@@ -148,7 +148,7 @@ The package works with zero configuration. To customize:
 
 `awsum-emacs A.B.C` is built and tested against `awsum A.B.C`. Mismatched versions are not supported — at startup the language server compares the package's expected version against its own and shows a notification on mismatch.
 
-Supported editor versions follow Awsum's [platform version policy](https://github.com/awsum-lang/awsum/blob/main/docs/platform-version-policy.md#editors): the minimum is the newest stable release that has been out for at least 7 days.
+Supported editor versions follow the Awsum [platform version policy](https://github.com/awsum-lang/awsum/blob/main/docs/platform-version-policy.md#editors): the minimum is the newest stable release that has been out for at least 7 days.
 
 ## Related
 
